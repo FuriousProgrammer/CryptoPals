@@ -1,5 +1,4 @@
 #pragma once
-#ifndef BYTES_T_H
 
 #include <stdint.h>
 #include <stddef.h> // size_t
@@ -20,6 +19,3 @@ Bytes_t* import_hex( const char* const hexstr );
 // returned pointers must be free'd by caller
 char* format_hex( const Bytes_t* const data );
 char* format_b64( const Bytes_t* const data );
-
-#define BYTES_T_H
-#endif
