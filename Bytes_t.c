@@ -1,7 +1,7 @@
 #include "Bytes_t.h"
 
 #include <stdlib.h>
-#include <string.h> // TODO: remove this dependency!
+#include <string.h> // TODO: remove this dependency?
 
 // TODO: convert this to a LUT? use SIMD for import funcs?
 static uint8_t hexit2nybble( const char c ) {
@@ -53,7 +53,7 @@ char* format_hex( const Bytes_t* const data ) {
     static const char* const chars = "0123456789abcdef";
 
     // TODO: make the caller provide the memory for output string?
-    char* ret = malloc( sizeof(*ret)*(data->length*2) );
+    char* ret = malloc( sizeof(*ret)*(data->length*2) + 1 );
     if ( !ret ) { return NULL; } // TODO: logging
 
     size_t data_pos = 0;
@@ -63,6 +63,7 @@ char* format_hex( const Bytes_t* const data ) {
         ret[str_pos++] = chars[ (byte & 0xF0) >> 4 ];
         ret[str_pos++] = chars[ (byte & 0x0F) >> 0 ];
     }
+    ret[str_pos] = '\0';
 
     return ret;
 }
@@ -73,7 +74,7 @@ char* format_b64( const Bytes_t* const data ) {
 
     // 3 bytes = 4 chars, missing bytes add padding
     size_t ret_len = (data->length/3 + (data->length % 3 > 0))*4;
-    char* ret = malloc( sizeof(*ret)*ret_len );
+    char* ret = malloc( sizeof(*ret)*ret_len + 1 );
 
     //  Byte A   Byte B   Byte C
     // 76543210 76543120 76543210
@@ -110,7 +111,42 @@ char* format_b64( const Bytes_t* const data ) {
         ret[str_pos++] = chars[ (a & 0xFC) >> 2 ];
         ret[str_pos++] = chars[ (a & 0x03) << 4 | (b & 0xF0) >> 4 ];
         ret[str_pos++] = chars[ (b & 0x0F) << 2 ];
-        ret[str_pos  ] = pad;
+        ret[str_pos++] = pad;
+    }
+    ret[str_pos] = '\0';
+
+    return ret;
+}
+
+static Bytes_t* copy( const Bytes_t* const data ) {
+    size_t datalen = sizeof(*data) + sizeof(*data->data)*(data->capacity);
+
+    Bytes_t* ret = malloc( datalen );
+    if ( !ret ) { return NULL; }
+
+    memcpy( ret, data, datalen );
+    return ret;
+}
+
+Bytes_t* multi_xor( const Bytes_t* const data, const Bytes_t* const key ) {
+    Bytes_t* ret = copy(data);
+    if ( !ret ) { return NULL; }
+
+    size_t key_pos = 0;
+    for ( size_t i = 0; i < ret->length; ++i ) {
+        ret->data[i] ^= key->data[key_pos];
+        key_pos = (key_pos + 1)%(key->length);
+    }
+
+    return ret;
+}
+
+Bytes_t* single_xor( const Bytes_t* const data, const uint8_t key ) {
+    Bytes_t* ret = copy(data);
+    if ( !ret ) { return NULL; }
+
+    for ( size_t i = 0; i < ret->length; ++i ) {
+        ret->data[i] ^= key;
     }
 
     return ret;

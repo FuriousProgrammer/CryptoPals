@@ -12,7 +12,7 @@ int main() {
     if ( !data ) { return 0; } // TODO: logging
 
     char* test = format_hex( data );
-    if ( !test) { return 0; } // TODO: logging
+    if ( !test ) { return 0; } // TODO: logging
     puts(input_hex);
     puts(test);
     printf("equal: %s\n", strcmp(test, input_hex) == 0 ? "true" : "false" );
