@@ -5,9 +5,9 @@
 #include "Bytes_t.h"
 
 int main() {
-    const char* input1_hex = "1c0111001f010100061a024b53535009181c";
-    const char* input2_hex = "686974207468652062756c6c277320657965";
-    const char* expected_hex = "746865206b696420646f6e277420706c6179";
+    const char* const input1_hex = "1c0111001f010100061a024b53535009181c";
+    const char* const input2_hex = "686974207468652062756c6c277320657965";
+    const char* const expected_hex = "746865206b696420646f6e277420706c6179";
     // input1 XOR input2 = expected
 
     Bytes_t* input = import_hex( input1_hex );
