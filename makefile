@@ -1,11 +1,12 @@
 BINDIR=bin
 OBJDIR=obj
 CC=gcc
-CFlags=-Wall -Werror -Wpedantic -std=c2x
+CFLAGS=-g -Wall -Werror -Wpedantic -fsanitize=address
+LDFLAGS=-static-libasan
 
 
-DEPS = Bytes_t.h
-_OBJS = Bytes_t.o
+DEPS = Bytes_t.h statistics.h
+_OBJS = Bytes_t.o statistics.o
 OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
 
 
@@ -18,7 +19,7 @@ MAINS = $(patsubst %.c,$(BINDIR)/%,$(wildcard main*.c))
 all: $(MAINS)
 
 $(BINDIR)/%: %.c $(OBJS) | $(BINDIR)
-	$(CC) -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 $(OBJDIR):
 	@mkdir $@

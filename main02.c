@@ -10,20 +10,28 @@ int main() {
     const char* const expected_hex = "746865206b696420646f6e277420706c6179";
     // input1 XOR input2 = expected
 
-    Bytes_t* input = import_hex( input1_hex );
-    if ( !input ) { return 0; } // TODO: logging
-    Bytes_t* key = import_hex( input2_hex );
+    String_t* txt = import_cstring( input1_hex, NULL );
+    if ( !txt ) { return 0; }
+
+    Bytes_t* input = import_hex( txt, NULL );
+    if ( !input ) { return 0; }
+
+    String_t* tmp = import_cstring( input2_hex, &txt );
+    if ( !tmp ) { return 0; }
+
+    Bytes_t* key = import_hex( txt, NULL );
     if ( !key ) { return 0; }
 
-    Bytes_t* data = multi_xor( input, key );
+    Bytes_t* data = multi_xor( input, key, NULL );
     if ( !data ) { return 0; }
 
-    char* test = format_hex( data );
+    String_t* test = format_hex( data, NULL );
     if ( !test ) { return 0; }
     puts(expected_hex);
-    puts(test);
-    printf("equal: %s\n", strcmp(test, expected_hex) == 0 ? "true" : "false" );
+    puts((char*)test->data);
+    printf("equal: %s\n", strcmp((char*)test->data, expected_hex) == 0 ? "true" : "false" );
 
+    free(txt);
     free(input);
     free(key);
     free(data);
