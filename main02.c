@@ -10,32 +10,27 @@ int main() {
     const char* const expected_hex = "746865206b696420646f6e277420706c6179";
     // input1 XOR input2 = expected
 
-    String_t* txt = import_cstring( input1_hex, NULL );
-    if ( !txt ) { return 0; }
+    String_t str = {0};
+    Bytes_t input = {0};
+    Bytes_t key = {0};
+    Bytes_t result = {0};
 
-    Bytes_t* input = import_hex( txt, NULL );
-    if ( !input ) { return 0; }
+    import_cstring( input1_hex, &str );
+    import_hex( str, &input );
+    import_cstring( input2_hex, &str );
+    import_hex( str, &key );
 
-    String_t* tmp = import_cstring( input2_hex, &txt );
-    if ( !tmp ) { return 0; }
+    multi_xor( input, key, &result );
+    format_hex( result, &str );
 
-    Bytes_t* key = import_hex( txt, NULL );
-    if ( !key ) { return 0; }
-
-    Bytes_t* data = multi_xor( input, key, NULL );
-    if ( !data ) { return 0; }
-
-    String_t* test = format_hex( data, NULL );
-    if ( !test ) { return 0; }
     puts(expected_hex);
-    puts((char*)test->data);
-    printf("equal: %s\n", strcmp((char*)test->data, expected_hex) == 0 ? "true" : "false" );
+    puts((char*)str.data);
+    printf("equal: %s\n", strcmp((char*)str.data, expected_hex) == 0 ? "true" : "false" );
 
-    free(txt);
-    free(input);
-    free(key);
-    free(data);
-    free(test);
+    free(str.data);
+    free(input.data);
+    free(key.data);
+    free(result.data);
 
     return 0;
 }

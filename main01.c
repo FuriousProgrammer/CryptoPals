@@ -8,29 +8,26 @@ int main() {
     const char* const input_hex = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
     const char* const expected_b64 = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
 
-    String_t* input = import_cstring( input_hex, NULL );
-    if ( !input ) { return 0; }
+    String_t str = {0};
+    Bytes_t data = {0};
+    import_cstring( input_hex, &str );
+    import_hex( str, &data );
 
-    Bytes_t* data = import_hex( input, NULL );
-    if ( !data ) { return 0; }
 
-    String_t* test = format_hex( data, NULL );
-    if ( !test ) { return 0; }
+    format_hex( data, &str );
+
     puts(input_hex);
-    puts((char*)test->data);
-    printf("equal: %s\n", strcmp((char*)test->data, input_hex) == 0 ? "true" : "false" );
+    puts((char*)str.data);
+    printf("equal: %s\n", strcmp((char*)str.data, input_hex) == 0 ? "true" : "false" );
 
-
-    String_t* tmp = format_b64( data, &test );
-    if ( !tmp ) { return 0; }
+    format_b64( data, &str );
 
     puts(expected_b64);
-    puts((char*)test->data);
-    printf("equal: %s\n", strcmp((char*)test->data, expected_b64) == 0 ? "true" : "false" );
+    puts((char*)str.data);
+    printf("equal: %s\n", strcmp((char*)str.data, expected_b64) == 0 ? "true" : "false" );
 
-    free(input);
-    free(data);
-    free(test);
+    free(data.data);
+    free(str.data);
 
     return 0;
 }

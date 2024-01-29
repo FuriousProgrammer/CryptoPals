@@ -1,7 +1,7 @@
 BINDIR=bin
 OBJDIR=obj
 CC=gcc
-CFLAGS=-g -Wall -Werror -Wpedantic -fsanitize=address
+CFLAGS=-g -Wall -Wextra -Werror -Wpedantic -fsanitize=address
 LDFLAGS=-static-libasan
 
 

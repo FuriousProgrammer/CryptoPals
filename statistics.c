@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h> // file stuff
 
-double score_english_ascii( const Bytes_t* const text ) {
+double score_english_ascii( const Bytes_t text ) {
     static double freqs[256] = {0};
     static bool init = false;
     if ( !init ) {
@@ -29,14 +29,14 @@ double score_english_ascii( const Bytes_t* const text ) {
     }
 
     uint32_t counts[256] = {0};
-    for ( size_t i = 0; i < text->length; ++i ) {
-        counts[text->data[i]]++;
+    for ( size_t i = 0; i < text.length; ++i ) {
+        counts[text.data[i]]++;
     }
 
     double score = 0.0;
     for ( size_t i = 0; i < 256; ++i ) {
         if ( counts[i] != 0 || freqs[i] != 0.0 ) {
-            double dif = (double)(counts[i])/text->length - freqs[i];
+            double dif = (double)(counts[i])/text.length - freqs[i];
             score += (dif*dif)/freqs[i];
         }
     }
