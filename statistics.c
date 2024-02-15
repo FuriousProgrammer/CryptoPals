@@ -42,3 +42,13 @@ double score_english_ascii( const Bytes_t text ) {
     }
     return score;
 }
+
+uint32_t hamming_distance( const Bytes_t a, const Bytes_t b ) {
+    if ( a.length != b.length ) { return 0xFFFFFFFF; } // -1
+
+    uint32_t dist = 0;
+    for ( size_t i = 0; i < a.length; ++i ) {
+        dist += __builtin_popcount( a.data[i] ^ b.data[i] );
+    }
+    return dist;
+}
